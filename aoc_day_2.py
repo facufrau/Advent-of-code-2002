@@ -3,7 +3,7 @@
 
 # Part one.
 passwords_1 = 0
-with open('day2a_input.txt', 'r') as f:
+with open('day2_input.txt', 'r') as f:
     for l in f.readlines():
         line = l.split()
         # Numbers and the limits for repeating values of letter.

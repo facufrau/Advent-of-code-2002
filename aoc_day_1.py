@@ -3,7 +3,7 @@
 from itertools import permutations
 
 # Read and convert input to a list.
-with open ('day1a_input.txt', 'r') as f:
+with open ('day1_input.txt', 'r') as f:
     report = [int(x) for x in f.readlines()]
 
 # Part one
