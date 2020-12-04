@@ -19,7 +19,7 @@ print(f"Part 1 answer: {passwords_1}")
 
 # Part two.
 passwords_2 = 0
-with open('day2a_input.txt', 'r') as f:
+with open('day2_input.txt', 'r') as f:
     for l in f.readlines():
         line = l.split()
         # Number are positions for checking the letter.
