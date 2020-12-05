@@ -1,5 +1,7 @@
 # --- Day 4: Passport Processing ---
 # by Facundo Frau - Github facufrau
+import re
+
 with open('day4_input.txt', 'r') as f:
     passports = {}
     new_line = ""
@@ -50,7 +52,7 @@ def valid_iyr(passport):
 		return False
 		
 def valid_eyr(passport):
-	"""Validates eyr -> 4 digits between 1920 and 2002."""
+	"""Validates eyr -> 4 digits between 2020 and 2030."""
 	if 'eyr' in passport:
 		if len(passport['eyr']) == 4 and (2020 <=int(passport['eyr']) <= 2030):
 			return True
@@ -60,10 +62,89 @@ def valid_eyr(passport):
 		return False
 	
 def valid_hgt(passport):
-	""" A number followed by either cm or in:
-		If cm, the number must be at least 150 and at most 193.
-		If in, the number must be at least 59 and at most 76.
-		(\d+)([a-z]{2}) REGEX
-		https://stackoverflow.com/questions/11592261/check-if-a-string-is-hexadecimal
-	"""
-	
+	"""Validates hgt: a number + unit (cm or in)"""
+	if 'hgt' in passport:
+		prog = re.compile(r"(\d+)([a-z]{2})$")
+		result = prog.match(passport['hgt'])
+		if not result:
+			return False
+		else:
+			height = int(result[1])
+			unit = result[2]
+			if unit == 'in':
+				if 59 <= height <= 76:
+					return True
+				else:
+					return False
+			if unit == 'cm':
+				if 150 <= height <= 193:
+					return True
+				else:
+					return False
+	else:
+		return False
+
+def valid_hcl(passport):
+	"""Validates hexadecimal color."""
+	if 'hcl' in passport:
+		color = passport['hcl'].strip('#')
+		if len(color) == 6:
+			try:
+				color = int(color, 16)
+				return True
+			except ValueError:
+				return False
+		else:
+			return False
+	else:
+		return False
+
+def valid_ecl(passport):
+	"""Validates ecl in list of colors."""
+	colors = ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth']
+	if 'ecl' in passport:
+		if passport['ecl'] in colors:
+			return True
+		else:
+			return False
+	else:
+		return False
+
+def valid_pid(passport):
+	"""Validates 9 digit number for pid."""
+	if 'pid' in passport:
+		if len(passport['pid']) == 9:
+			try:
+				int(passport['pid'])
+				return True
+			except ValueError:
+				return False
+		else:
+			return False
+	else:
+		return False
+
+def check_passport(passport):
+	if not valid_byr(passport):
+		return False
+	elif not valid_iyr(passport):
+		return False
+	elif not valid_eyr(passport):
+		return False
+	elif not valid_hgt(passport):
+		return False
+	elif not valid_hcl(passport):
+		return False
+	elif not valid_ecl(passport):
+		return False
+	elif not valid_pid(passport):
+		return False
+	else:
+		return True
+
+valid_passports = 0
+for value in passports.values():
+	if check_passport(value):
+		valid_passports += 1
+
+print(f"Part 2 Answer - Valid passports: {valid_passports}")
