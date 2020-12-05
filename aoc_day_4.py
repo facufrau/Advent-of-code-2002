@@ -3,29 +3,27 @@
 import re
 
 with open('day4_input.txt', 'r') as f:
-    passports = {}
+    passports = []
     new_line = ""
-    counter = 1
+	
     lines = f.readlines()
-
     for line in lines:
         if line == '\n':
-            data = new_line.split()
-            passports[counter] = {}
-            for d in data:
-                d = d.split(":")
-                passports[counter][d[0]] = d[1]
-            counter += 1
+            passport_data = {}
+            for data in new_line.split():
+                data = data.split(":")
+                passport_data[data[0]] = data[1]
+            passports.append(passport_data)
             new_line = ""
         else:
             new_line += line.replace("\n", " ")
-            
+
 # Part one
 valid_passports = 0
-for value in passports.values():
-	if len(value) == 8:
+for passport in passports:
+	if len(passport) == 8:
 		valid_passports += 1
-	elif len(value) == 7 and ('cid' not in value):
+	elif len(passport) == 7 and ('cid' not in passport):
 		valid_passports += 1
 
 print(f"Part 1 Answer - Valid passports: {valid_passports}")
@@ -33,96 +31,46 @@ print(f"Part 1 Answer - Valid passports: {valid_passports}")
 # Part two
 def valid_byr(passport):
 	"""Validates byr -> 4 digits between 1920 and 2002."""
-	if 'byr' in passport:
-		if len(passport['byr']) == 4 and (1920 <=int(passport['byr']) <= 2002):
-			return True
-		else:
-			return False
-	else:
-		return False
+	return ('byr' in passport) and (len(passport['byr']) == 4 and (1920 <= int(passport['byr']) <= 2002))
 
 def valid_iyr(passport):
 	"""Validates iyr -> 4 digits between 2010 and 2020."""
-	if 'iyr' in passport:
-		if len(passport['iyr']) == 4 and (2010 <=int(passport['iyr']) <= 2020):
-			return True
-		else:
-			return False
-	else:
-		return False
+	return ('iyr' in passport) and (len(passport['iyr']) == 4 and (2010 <= int(passport['iyr']) <= 2020))
 		
 def valid_eyr(passport):
 	"""Validates eyr -> 4 digits between 2020 and 2030."""
-	if 'eyr' in passport:
-		if len(passport['eyr']) == 4 and (2020 <=int(passport['eyr']) <= 2030):
-			return True
-		else:
-			return False
-	else:
-		return False
-	
+	return ('eyr' in passport) and (len(passport['eyr']) == 4 and (2020 <= int(passport['eyr']) <= 2030))
+
 def valid_hgt(passport):
 	"""Validates hgt: a number + unit (cm or in)"""
 	if 'hgt' in passport:
-		prog = re.compile(r"(\d+)([a-z]{2})$")
-		result = prog.match(passport['hgt'])
-		if not result:
-			return False
-		else:
-			height = int(result[1])
-			unit = result[2]
-			if unit == 'in':
-				if 59 <= height <= 76:
-					return True
-				else:
-					return False
-			if unit == 'cm':
-				if 150 <= height <= 193:
-					return True
-				else:
-					return False
-	else:
+		un = passport['hgt'][-2:]
+		ht = passport['hgt'][:-2]
+		if ht.isdigit():
+			ht = int(ht)
+			return (un == 'cm' and (150 <= ht <= 193)) or (un == 'in' and (59 <= ht <= 76))
 		return False
+	return False
 
 def valid_hcl(passport):
 	"""Validates hexadecimal color."""
 	if 'hcl' in passport:
-		color = passport['hcl'].strip('#')
-		if len(color) == 6:
-			try:
-				color = int(color, 16)
-				return True
-			except ValueError:
-				return False
-		else:
-			return False
-	else:
-		return False
+		hcl = passport['hcl']
+		return (hcl[0] == "#" and all([x in 'abcdef0123456789' for x in hcl[1:]]))
+	return False
 
 def valid_ecl(passport):
 	"""Validates ecl in list of colors."""
 	colors = ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth']
 	if 'ecl' in passport:
-		if passport['ecl'] in colors:
-			return True
-		else:
-			return False
-	else:
-		return False
+		return passport['ecl'] in colors
+	return False
 
 def valid_pid(passport):
 	"""Validates 9 digit number for pid."""
 	if 'pid' in passport:
-		if len(passport['pid']) == 9:
-			try:
-				int(passport['pid'])
-				return True
-			except ValueError:
-				return False
-		else:
-			return False
-	else:
-		return False
+		return len(passport['pid']) == 9 and passport['pid'].isdigit()
+	return False
 
 def check_passport(passport):
 	if not valid_byr(passport):
@@ -143,8 +91,8 @@ def check_passport(passport):
 		return True
 
 valid_passports = 0
-for value in passports.values():
-	if check_passport(value):
+for passport in passports:
+	if check_passport(passport):
 		valid_passports += 1
 
 print(f"Part 2 Answer - Valid passports: {valid_passports}")
