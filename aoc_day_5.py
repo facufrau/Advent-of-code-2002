@@ -2,7 +2,6 @@
 # by Facundo Frau - Github facufrau
 ROWS = [x for x in range(128)]
 COLS = [x for x in range(8)]
-
 # Part one.
 with open('day5_input.txt') as f:
     max_id = 0
@@ -25,9 +24,9 @@ with open('day5_input.txt') as f:
         if seat_id > max_id:
             max_id = seat_id
 print(f"Part one answer - max ID: {seat_id}")
+
 # Part two.
 id_nums.sort()
 for n in id_nums[1:-1]:
     if (n + 1) not in id_nums:
         print(f"Part two answer - My ID: {n + 1}")  
-#print(id_nums)
