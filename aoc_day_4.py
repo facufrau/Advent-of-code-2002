@@ -1,6 +1,5 @@
 # --- Day 4: Passport Processing ---
 # by Facundo Frau - Github facufrau
-import re
 
 with open('day4_input.txt', 'r') as f:
     passports = []
@@ -25,7 +24,6 @@ for passport in passports:
 		valid_passports += 1
 	elif len(passport) == 7 and ('cid' not in passport):
 		valid_passports += 1
-
 print(f"Part 1 Answer - Valid passports: {valid_passports}")
 	
 # Part two
@@ -94,5 +92,4 @@ valid_passports = 0
 for passport in passports:
 	if check_passport(passport):
 		valid_passports += 1
-
 print(f"Part 2 Answer - Valid passports: {valid_passports}")
