@@ -26,4 +26,4 @@ for bus in buses:
     else:
         schedule[bus] = buses.index(bus)
 print(schedule)
-print(gcd(17,13))
+#TODO - COMPLETE PART 2
